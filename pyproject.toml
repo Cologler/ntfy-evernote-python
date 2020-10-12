@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "ntfy-evernote"
 version = "0.3.0"
-description = ""
+description = "Evernote backend for ntfy"
 authors = ["Cologler <skyoflw@gmail.com>"]
 license = "MIT"
 homepage = 'https://github.com/Cologler/ntfy-evernote-python'
