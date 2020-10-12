@@ -15,10 +15,6 @@ from evernote.api.client import EvernoteClient
 from evernote.edam.type.ttypes import Note, Notebook
 from evernote.edam.error.constants import EDAMErrorCode, EDAMUserException
 
-import colorama
-
-colorama.init()
-
 CONSUMER_KEY='skyoflw-8588'
 CONSUMER_SECRET='6c5365fbb7beb4ef'
 
