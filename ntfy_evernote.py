@@ -9,7 +9,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 import webbrowser
 from xml.sax.saxutils import escape
-from threading import Thread
+from threading import Thread, Event
 
 from evernote.api.client import EvernoteClient
 from evernote.edam.type.ttypes import Note, Notebook
@@ -29,19 +29,22 @@ class CallbackServerHandler(BaseHTTPRequestHandler):
                 sandbox_lnb=qs.get('sandbox_lnb', [None])[0]
             )
             self.server.__dict__.update(state)
+            self.server.waiter.set()
         self.send_response(200)
 
     def log_message(self, *_, **__):
         # disable log
         pass
 
-class OauthCallbackListener(Thread):
+class OAuthCallbackListener(Thread):
 
     def __init__(self) -> None:
         super().__init__()
         self.daemon = True
         # use port 0 to auto find unused port:
         self.server = HTTPServer(('', 0), CallbackServerHandler)
+        self.waiter = Event()
+        self.server.waiter = self.waiter
 
     def run(self):
         self.server.serve_forever()
@@ -51,7 +54,7 @@ class OauthCallbackListener(Thread):
         self.server.server_close()
 
 def login(client: EvernoteClient):
-    server = OauthCallbackListener()
+    server = OAuthCallbackListener()
     server.start()
     try:
         # 1. Generate a Temporary Token
@@ -60,7 +63,10 @@ def login(client: EvernoteClient):
         # 2. Request User Authorization
         authorize_url = client.get_authorize_url(request_token)
         webbrowser.open_new_tab(authorize_url)
-        input('waiting for authorization ...')
+        print('listening for authorization callback, press `CTRL+C` wait 3 minutes to cancel...')
+        if not server.waiter.wait(60*3):
+            # timeout
+            return
     finally:
         server.stop()
 
