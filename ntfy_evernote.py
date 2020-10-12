@@ -93,16 +93,17 @@ def notify(title, message,
            **_):
 
     try:
-        if access_token:
-            client = EvernoteClient(token=access_token)
-        else:
-            client = EvernoteClient(
-                consumer_key=CONSUMER_KEY,
-                consumer_secret=CONSUMER_SECRET
-            )
+        client = EvernoteClient(
+            consumer_key=CONSUMER_KEY,
+            consumer_secret=CONSUMER_SECRET,
+            token=access_token,
+            sandbox=sandbox, china=china
+        )
+
+        if not client.token:
             login(client=client)
 
-        if client.token is None:
+        if not client.token:
             print(f'Skiped with not login.')
             return 1
 
