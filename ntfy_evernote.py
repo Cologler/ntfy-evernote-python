@@ -85,8 +85,9 @@ def login(client: EvernoteClient):
     print(f'you can save it in your config file.')
 
 def notify(title, message,
+           access_token=None,
            notebook='ntfy-notifications',
-           access_token=None, sandbox=False, china=False,
+           sandbox=False, china=False,
            **_):
 
     try:
