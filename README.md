@@ -2,8 +2,6 @@
 
 Evernote backend for ntfy.
 
-**Currently only work on sandbox.**
-
 ## Usage
 
 ``` yaml
