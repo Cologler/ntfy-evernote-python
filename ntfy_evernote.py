@@ -10,6 +10,7 @@ import urllib.parse
 import webbrowser
 from xml.sax.saxutils import escape
 from threading import Thread, Event
+from time import monotonic as _time
 
 from evernote.api.client import EvernoteClient
 from evernote.edam.type.ttypes import Note, Notebook
@@ -36,6 +37,18 @@ class CallbackServerHandler(BaseHTTPRequestHandler):
         # disable log
         pass
 
+class InterruptableEvent(Event):
+    '''
+    a event that support keyboard Interrupt
+    '''
+    def wait(self, timeout=None):
+        wait = super().wait
+        if timeout is None:
+            while not wait(0.01): pass
+        else:
+            end = _time() + timeout
+            while (_time() < end) and (not wait(0.01)): pass
+
 class OAuthCallbackListener(Thread):
 
     def __init__(self) -> None:
@@ -43,7 +56,7 @@ class OAuthCallbackListener(Thread):
         self.daemon = True
         # use port 0 to auto find unused port:
         self.server = HTTPServer(('', 0), CallbackServerHandler)
-        self.waiter = Event()
+        self.waiter = InterruptableEvent()
         self.server.waiter = self.waiter
 
     def run(self):
@@ -128,3 +141,6 @@ def notify(title, message,
             return 1
         else:
             raise
+
+
+notify('', '')
