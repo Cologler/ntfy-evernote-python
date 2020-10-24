@@ -141,6 +141,3 @@ def notify(title, message,
             return 1
         else:
             raise
-
-
-notify('', '')
