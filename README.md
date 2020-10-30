@@ -2,6 +2,12 @@
 
 Evernote backend for ntfy.
 
+## Installation
+
+``` cmd
+pip install ntfy-evernote
+```
+
 ## Usage
 
 ``` yaml
