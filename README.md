@@ -1,6 +1,6 @@
 # ntfy-evernote
 
-Evernote backend for ntfy.
+Unofficial Evernote® backend for ntfy.
 
 ## Installation
 
